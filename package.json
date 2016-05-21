@@ -4,8 +4,8 @@
   "description": "node es6 module template",
   "main": "index.js",
   "scripts": {
-     "compile": "./node_modules/.bin/babel -d lib/ src/",
-    "test": "npm run compile && ./node_modules/.bin/mocha --compilers js:babel-core/register",
+    "compile": "./node_modules/.bin/babel -d lib/ src/",
+    "test": "npm run compile && ./node_modules/.bin/mocha -t 10000 --compilers js:babel-core/register",
     "prepublish": "npm run compile"
   },
   "repository": {
@@ -37,5 +37,8 @@
     "eslint-plugin-jsx-a11y": "^1.2.2",
     "eslint-plugin-react": "^5.1.1",
     "mocha": "^2.4.5"
+  },
+  "dependencies": {
+    "adbkit": "^2.4.1"
   }
 }
