@@ -14,7 +14,8 @@ nata-device
   <a href="https://saucelabs.com/u/vuejs"><img src="https://saucelabs.com/browser-matrix/vuejs.svg" alt="Sauce Test Status"></a>
 </p> -->
 
-<p align="center"><a href="http://mclspace.com" target="_blank"><img width="100" src="http://7pun7p.com1.z0.glb.clouddn.com/image/nata-banner.png"></a></p>
+<p align="center"><a href="http://mclspace.com" target="_blank"><img width="400" src="http://7pun7p.com1.z0.glb.clouddn.com/image/nata-banner.png"></a></p>
+
 
 <p align="center">
     <a href="https://travis-ci.org/open-nata/nata-device/branches"><img src="https://travis-ci.org/open-nata/nata-device.svg?branch=master" alt="Build Status"></a>
