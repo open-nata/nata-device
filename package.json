@@ -1,6 +1,6 @@
 {
   "name": "node-es6-module-template",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "node es6 module template",
   "main": "index.js",
   "scripts": {
