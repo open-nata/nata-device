@@ -12,6 +12,11 @@ describe('testing device api', () => {
   // beforeEach(() => {
   //   device.sleep(2000)
   // })
+  it('should dump ui', async done => {
+    const target = await device.dumpUI()
+    console.log(target)
+    done()
+  })
 
   it('should get focused pkgact', async done => {
     const pkgact = await device.getFocusedPackageAndActivity()

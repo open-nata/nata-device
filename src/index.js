@@ -87,7 +87,7 @@ class Device {
     const source = '/storage/sdcard0/window_dump.xml'
     const cmd = `uiautomator dump ${source}`
     const target = `${os.tmpdir()}/dumpfile.xml`
-    await this.adbshell(this.deviceId, cmd)
+    await this.adbshell(cmd)
     const output = await this.pullFile(source, target)
     return output
   }
