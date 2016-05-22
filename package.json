@@ -2,7 +2,7 @@
   "name": "nata-device",
   "version": "0.1.0",
   "description": "nata device for android",
-  "main": "lib/index.js",
+  "main": "index.js",
   "scripts": {
     "compile": "./node_modules/.bin/babel -d lib/ src/",
     "test": "npm run compile && ./node_modules/.bin/mocha -t 10000 --compilers js:babel-core/register",
