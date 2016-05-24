@@ -6,3 +6,36 @@
     <a href="https://codecov.io/gh/open-nata/nata-device/branches"><img src="https://img.shields.io/codecov/c/github/open-nata/nata-device.svg" alt="Coverage Status"></a>
 </p> -->
 
+---------------------------------------------------------------------
+**nata-device** is an abstract of android device based on [adbkit](https://github.com/openstf/adbkit), which provides high level api such as click ,textinput and much more.
+
+
+# Requirements
+- Nodejs >= 4.3.2
+- adb
+
+# Getting started
+```
+$ npm install --save nata-device
+```
+
+# API
+### sleep(ms)
+
+### adbshell(cmd)
+
+### clearAppData(pkg)
+
+### click(x, y)
+
+### getFocusedPackageAndActivity()
+
+### getCurrentPackageName()
+
+### getCurrentActivity()
+
+### dumpUI()
+
+### startActivity(component)
+
+### pullFile(source, target)
