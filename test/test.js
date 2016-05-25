@@ -47,4 +47,9 @@ describe('testing device api', () => {
     await device.click(x, y)
     done()
   })
+
+  it('should back', async done => {
+    await device.back()
+    done()
+  })
 })

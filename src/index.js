@@ -1,6 +1,7 @@
 import adb from 'adbkit'
 import os from 'os'
 import fs from 'fs'
+import AndroidKeyCode from './AndroidKeyCode.js'
 
 const client = adb.createClient()
 
@@ -48,6 +49,15 @@ class Device {
   async click(x, y) {
     const cmd = `input tap ${x} ${y}`
     await this.adbshell(cmd)
+  }
+
+  async sendKeyEvent(keycode) {
+    const cmd = `input keyevent ${keycode}`
+    await this.adbshell(cmd)
+  }
+
+  back() {
+    return this.sendKeyEvent(AndroidKeyCode.BACK)
   }
 
   /**

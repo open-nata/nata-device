@@ -19,7 +19,21 @@
 $ npm install --save nata-device
 ```
 
+# Example
+```
+import Device from 'nata-device'
+
+const deviceId = 'xxxxx'
+let device = new Device(deviceId)
+
+device.startActivity.then(() => {
+  console.log('done')
+})
+```
+
 # API
+### constructor(deviceId)
+
 ### sleep(ms)
 
 ### adbshell(cmd)
@@ -27,6 +41,10 @@ $ npm install --save nata-device
 ### clearAppData(pkg)
 
 ### click(x, y)
+
+### sendKeyEvent(keycode)
+
+### back()
 
 ### getFocusedPackageAndActivity()
 
