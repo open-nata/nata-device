@@ -107,9 +107,10 @@ class Device {
    * @param  {String} componet pkg/act
    * @return {null}
    */
-  startActivity(component) {
-    // const cmd = `am start -S -W -n ${componet}`
-    return client.startActivity(this.deviceId, { component, wait: true })
+  async startActivity(component) {
+    const cmd = `am start -S -W -n ${component}`
+    // return client.startActivity(this.deviceId, { component, wait: true })
+    await this.adbshell(cmd)
   }
 
   /**
