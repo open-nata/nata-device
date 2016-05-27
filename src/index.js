@@ -17,7 +17,7 @@ class Device {
   /**
    * run adb shell commmand and get the output
    * @param  {String} cmd command to run
-   * @return {String} the output
+   * @return {Promise} the output
    */
   adbshell(cmd) {
     return new Promise((resolve, reject) => {
@@ -98,13 +98,12 @@ class Device {
     const cmd = `uiautomator dump ${source}`
     const target = `${os.tmpdir()}/dumpfile.xml`
     await this.adbshell(cmd)
-    const output = await this.pullFile(source, target)
-    return output
+    return await this.pullFile(source, target)
   }
 
   /**
    * start activity
-   * @param  {String} componet pkg/act
+   * @param  {String} component pkg/act
    * @return {null}
    */
   async startActivity(component) {
@@ -117,7 +116,7 @@ class Device {
    * pull file from device to local file system
    * @param  {String} source src file path of the device
    * @param  {String} target target file path of the local file system
-   * @return {String} target file path
+   * @return {Promise} target file path
    */
   pullFile(source, target) {
     return new Promise((resolve, reject) => {
