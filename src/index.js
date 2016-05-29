@@ -10,6 +10,11 @@ class Device {
     this.deviceId = deviceId
   }
 
+  /**
+   * sleep for ms time
+   * @param  {Integer} ms time in ms
+   * @return {Promise} 
+   */
   sleep(ms) {
     return new Promise((resolve) => { setTimeout(resolve, ms) })
   }
@@ -17,7 +22,7 @@ class Device {
   /**
    * run adb shell commmand and get the output
    * @param  {String} cmd command to run
-   * @return {Promise} the output
+   * @return {Promise}
    */
   adbshell(cmd) {
     return new Promise((resolve, reject) => {
@@ -44,25 +49,34 @@ class Device {
    * click (x,y)
    * @param  {String} x - coordinate x
    * @param  {String} y - coordinate y
-   * @return {null}
+   * @return {Promise}
    */
   async click(x, y) {
     const cmd = `input tap ${x} ${y}`
     await this.adbshell(cmd)
   }
 
+  /**
+   * send key event from https://developer.android.com/reference/android/view/KeyEvent.html
+   * @param  {String} keycode keycode from Android
+   * @return {Promise}
+   */
   async sendKeyEvent(keycode) {
     const cmd = `input keyevent ${keycode}`
     await this.adbshell(cmd)
   }
 
+  /**
+   * press back key of the device
+   * @return {Promise}
+   */
   back() {
     return this.sendKeyEvent(AndroidKeyCode.BACK)
   }
 
   /**
    * get current focused package and activity
-   * @return {String}
+   * @return {Promise}
    */
   async getFocusedPackageAndActivity() {
     const reg = /[a-zA-Z0-9.]+\/.[a-zA-Z0-9.]+/
@@ -73,7 +87,7 @@ class Device {
 
   /**
    * get current package name
-   * @return {String}
+   * @return {Promise}
    */
   async getCurrentPackageName() {
     const pkgact = await this.getFocusedPackageAndActivity()
@@ -82,7 +96,7 @@ class Device {
 
   /**
    * get current activity
-   * @return {String}
+   * @return {Promise}
    */
   async getCurrentActivity() {
     const pkgact = await this.getFocusedPackageAndActivity()
@@ -104,7 +118,7 @@ class Device {
   /**
    * start activity
    * @param  {String} component pkg/act
-   * @return {null}
+   * @return {Promise}
    */
   async startActivity(component) {
     const cmd = `am start -S -W -n ${component}`

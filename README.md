@@ -20,40 +20,84 @@ $ npm install --save nata-device
 ```
 
 # Example
+First make sure that the device with deviceId is connnected to the computer and can access by adb,then 
+
 ```
 import Device from 'nata-device'
 
 const deviceId = 'xxxxx'
-let device = new Device(deviceId)
+const device = new Device(deviceId)
+const component = 'SamplePackage/.sampleActivity'
 
-device.startActivity.then(() => {
+device.startActivity(component).then(() => {
   console.log('done')
 })
+
 ```
 
 # API
 ### constructor(deviceId)
+The constructor of Device class
+```
+import Device from 'nata-device'
+
+const deviceId = 'xxxxx'
+const device = new Device(deviceId)
+```
 
 ### sleep(ms)
+   * sleep for ms time
+   * @param  {Integer} ms time in ms
+   * @return {Promise} 
 
 ### adbshell(cmd)
+  * run adb shell commmand and get the output
+  * @param  {String} cmd command to run
+  * @return {Promise}
 
 ### clearAppData(pkg)
+   * clear app data of pkg
+   * @param  {String} pkg - pkg to be cleared
+   * @return {Boolean}     wheather success to delete
 
 ### click(x, y)
+   * click (x,y)
+   * @param  {String} x - coordinate x
+   * @param  {String} y - coordinate y
+   * @return {Promise}
 
 ### sendKeyEvent(keycode)
+   * send key event from https://developer.android.com/reference/android/view/KeyEvent.html
+   * @param  {String} keycode keycode from Android
+   * @return {Promise} 
 
 ### back()
+  * press back key of the device
+  * @return {Promise}
 
 ### getFocusedPackageAndActivity()
+   * get current focused package and activity
+   * @return {Promise}
 
 ### getCurrentPackageName()
+   * get current package name
+   * @return {Promise}
 
 ### getCurrentActivity()
+   * get current activity
+   * @return {Promise}
 
 ### dumpUI()
+   * Dump ui xml and pull it to local temp file
+   * @return {Promise} resolve the target xml file
 
 ### startActivity(component)
+   * start activity
+   * @param  {String} component pkg/act
+   * @return {Promise}
 
 ### pullFile(source, target)
+   * pull file from device to local file system
+   * @param  {String} source src file path of the device
+   * @param  {String} target target file path of the local file system
+   * @return {Promise} target file path
