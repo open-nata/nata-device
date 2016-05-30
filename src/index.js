@@ -1,4 +1,5 @@
 import adb from 'adbkit'
+import _ from 'lodash'
 import os from 'os'
 import fs from 'fs'
 import AndroidKeyCode from './AndroidKeyCode.js'
@@ -13,10 +14,22 @@ class Device {
   /**
    * sleep for ms time
    * @param  {Integer} ms time in ms
-   * @return {Promise} 
+   * @return {Promise}
    */
   sleep(ms) {
     return new Promise((resolve) => { setTimeout(resolve, ms) })
+  }
+
+  /**
+   * get the ids of online connected devices
+   * @return {Promise }
+   */
+  async getOnlineDeviceIds() {
+    const devices = await client.listDevices()
+    const ids = _.map(devices, device => {
+      return device.id
+    })
+    return ids
   }
 
   /**
@@ -42,6 +55,10 @@ class Device {
     const cmd = `pm clear ${pkg}`
     const output = await this.adbshell(cmd)
     return output === 'Success'
+  }
+
+  install(apk) {
+    return client.install(this.deviceId, apk)
   }
 
 
@@ -151,7 +168,13 @@ export default Device
  */
 
 // const deviceId = 'DU2SSE1478031311'
-// const device = new Device(deviceId)
+const deviceId = '080539a400e358f3'
+
+const apk = 'assets/cxnt.apk'
+const device = new Device(deviceId)
+device.install(apk).then(() => {
+  console.log('done')
+})
 
 // // device.dumpUI().then((output) => console.log(output))
 // // device.getFocusedPackageAndActivity().then((output) => console.log(output))

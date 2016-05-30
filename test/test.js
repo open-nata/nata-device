@@ -52,4 +52,10 @@ describe('testing device api', () => {
     await device.back()
     done()
   })
+
+  it('should return all the connnected devices id', async done => {
+    const ids = await device.getOnlineDeviceIds()
+    console.log(ids)
+    done()
+  })
 })

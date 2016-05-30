@@ -101,3 +101,7 @@ const device = new Device(deviceId)
    * @param  {String} source src file path of the device
    * @param  {String} target target file path of the local file system
    * @return {Promise} target file path
+
+### getOnlineDeviceIds()
+   * get the ids of online connected devices
+   * @return {Promise }
