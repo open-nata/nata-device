@@ -2,6 +2,7 @@ import adb from 'adbkit'
 import _ from 'lodash'
 import os from 'os'
 import fs from 'fs'
+import { exec } from 'child_process'
 import AndroidKeyCode from './AndroidKeyCode.js'
 
 const client = adb.createClient()
@@ -33,6 +34,14 @@ class Device {
   }
 
   /**
+   * get [adbkit-logcat](https://www.npmjs.com/package/adbkit-logcat) client
+   * @return {client}
+   */
+  logcat() {
+    return client.openLogcat(this.deviceId, { clear: true })
+  }
+
+  /**
    * run adb shell commmand and get the output
    * @param  {String} cmd command to run
    * @return {Promise}
@@ -47,9 +56,24 @@ class Device {
   }
 
   /**
+   * Static
+   * run shell command and get the output
+   * @param  {String} cmd to run
+   * @return {Promise}
+   */
+  static shell(cmd) {
+    return new Promise((resolve, reject) => {
+      exec(cmd, (err, stdout, stderr) => {
+        if (err) reject(err)
+        else resolve(stdout || stderr)
+      })
+    })
+  }
+
+  /**
    * clear app data of pkg
-   * @param  {String} pkg - pkg to be cleared
-   * @return {Boolean}     wheather success to delete
+   * @param  {String} pkg  pkg to be cleared
+   * @return {Promise}     wheather success to delete
    */
   async clearAppData(pkg) {
     const cmd = `pm clear ${pkg}`
@@ -57,8 +81,31 @@ class Device {
     return output === 'Success'
   }
 
+  /**
+   * install apk
+   * @param  {String} apk path
+   * @return {Promise}
+   */
   install(apk) {
     return client.install(this.deviceId, apk)
+  }
+
+  /**
+   * Static
+   * get permissions of apk, make sure you can call aapt from command line
+   * @param  {String} apk path
+   * @return {String}
+   */
+  static async getPermissions(apk) {
+    const cmd = `aapt d permissions ${apk}`
+    const output = await this.shell(cmd)
+    const permissions = _
+          .chain(output)
+          .split('\n')
+          .filter(line => line.startsWith('uses-permission'))
+          .map(line => line.split(' ')[1].slice(6, -2))
+          .value()
+    return permissions
   }
 
 
@@ -168,13 +215,24 @@ export default Device
  */
 
 // const deviceId = 'DU2SSE1478031311'
-const deviceId = '080539a400e358f3'
+// // const deviceId = '080539a400e358f3'
 
-const apk = 'assets/cxnt.apk'
-const device = new Device(deviceId)
-device.install(apk).then(() => {
-  console.log('done')
-})
+// const apk = 'assets/cxnt.apk'
+// const device = new Device(deviceId)
+// device.getPermissions(apk).then(permissions => {
+//   console.log(permissions)
+// })
+
+// device.logcat().then((logcat) => {
+//   logcat.includeAll('JavaBinder',6)
+//   logcat.on('entry', (entry) => {
+//     console.log(`${entry.tag} :    ${entry.message}`)
+//   })
+
+//   logcat.on('finish', () => {
+
+//   })
+// })
 
 // // device.dumpUI().then((output) => console.log(output))
 // // device.getFocusedPackageAndActivity().then((output) => console.log(output))

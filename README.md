@@ -58,7 +58,7 @@ const device = new Device(deviceId)
 ### clearAppData(pkg)
    * clear app data of pkg
    * @param  {String} pkg - pkg to be cleared
-   * @return {Boolean}     wheather success to delete
+   * @return {Promise}     wheather success to delete
 
 ### click(x, y)
    * click (x,y)
@@ -105,3 +105,20 @@ const device = new Device(deviceId)
 ### getOnlineDeviceIds()
    * get the ids of online connected devices
    * @return {Promise }
+
+### shell(cmd)
+   * Static
+   * run shell command and get the output
+   * @param  {String} cmd to run
+   * @return {Promise}
+
+### logcat()
+   * get [adbkit-logcat](https://www.npmjs.com/package/adbkit-logcat) client
+   * @return {client}
+
+### getPermissions(apk)
+   * Static
+   * get permissions of apk, make sure you can call aapt from command line
+   * @param  {String} apk path
+   * @return {String}
+

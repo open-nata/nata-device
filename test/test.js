@@ -1,8 +1,10 @@
 import Device from '../'
 import assert from 'assert'
+import path from 'path'
 
 describe('testing device api', () => {
   const deviceId = 'DU2SSE1478031311'
+  const apkPath = path.join(__dirname, '../assets/cxnt.apk')
   let device
 
   before(() => {
@@ -12,6 +14,13 @@ describe('testing device api', () => {
   // beforeEach(() => {
   //   device.sleep(2000)
   // })
+
+  it('should install apk', async function(done) {
+    this.timeout(40000)
+    await device.install(apkPath)
+    done()
+  })
+
   it('should dump ui', async done => {
     const target = await device.dumpUI()
     console.log(target)
@@ -58,4 +67,12 @@ describe('testing device api', () => {
     console.log(ids)
     done()
   })
+
+  it('shoudl get all permissions', async done => {
+    const permissions = await Device.getPermissions(apkPath)
+    assert.notEqual(permissions.length, 0)
+    done()
+  })
+
+  
 })
