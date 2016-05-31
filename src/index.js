@@ -13,6 +13,14 @@ class Device {
   }
 
   /**
+   * pm grant <PACKAGE_NAME> <PERMISSION>
+   */
+  // async grantPermission(pkg, permission) {
+  //   const cmd = `pm grant ${pkg} ${permission}`
+  //   await this.adbshell(cmd)
+  // }
+
+  /**
    * sleep for ms time
    * @param  {Integer} ms time in ms
    * @return {Promise}
@@ -23,7 +31,7 @@ class Device {
 
   /**
    * get the ids of online connected devices
-   * @return {Promise }
+   * @return {Promise } ids [String] 
    */
   async getOnlineDeviceIds() {
     const devices = await client.listDevices()
@@ -44,7 +52,7 @@ class Device {
   /**
    * run adb shell commmand and get the output
    * @param  {String} cmd command to run
-   * @return {Promise}
+   * @return {Promise} output
    */
   adbshell(cmd) {
     return new Promise((resolve, reject) => {
@@ -59,7 +67,7 @@ class Device {
    * Static
    * run shell command and get the output
    * @param  {String} cmd to run
-   * @return {Promise}
+   * @return {Promise} stdout || stderr
    */
   static shell(cmd) {
     return new Promise((resolve, reject) => {
@@ -73,7 +81,7 @@ class Device {
   /**
    * clear app data of pkg
    * @param  {String} pkg  pkg to be cleared
-   * @return {Promise}     wheather success to delete
+   * @return {Promise} wheather success to delete
    */
   async clearAppData(pkg) {
     const cmd = `pm clear ${pkg}`
@@ -94,20 +102,63 @@ class Device {
    * Static
    * get permissions of apk, make sure you can call aapt from command line
    * @param  {String} apk path
-   * @return {String}
+   * @return {Promise} permissions [String]
    */
-  static async getPermissions(apk) {
+  static async getPermissionsFromApk(apk) {
     const cmd = `aapt d permissions ${apk}`
     const output = await this.shell(cmd)
     const permissions = _
           .chain(output)
           .split('\n')
           .filter(line => line.startsWith('uses-permission'))
-          .map(line => line.split(' ')[1].slice(6, -2))
+          .map(line => line.split(' ')[1].slice(6, -1))
           .value()
     return permissions
   }
 
+  /**
+   * getPermissions pkg
+   * @param  {String} pkg package of the app
+   * @return {Promise} permissions [String]
+   */
+  async getPermissions(pkg) {
+    const codePath = (await this.adbshell(`dumpsys package ${pkg} | grep codePath`)).trim().slice(9)
+    const apkPath = await this.pullFile(codePath, `${os.tmpdir()}/app.apk`)
+    const permissions = await Device.getPermissionsFromApk(apkPath)
+    return permissions
+  }
+
+  /**
+   * adb shell dumpsys package com.cvicse.zhnt | grep android.permission
+   * get granted permissions
+   * @param  {String} pkg package of the app
+   * @return {Promise} permissions [String] granted permissions
+   */
+  async getGrantedPermissions(pkg) {
+    const output = await this.adbshell(`dumpsys package ${pkg} | grep android.permission`)
+    const permissions = _
+            .chain(output)
+            .split('\n')
+            .map(line => line.trim())
+            .value()
+    return permissions
+  }
+
+  /**
+   * get not granted permissions
+   * @param  {String} pkg package of the app
+   * @return {Promise} notGrantedPermissions [String] not granted permissions
+   */
+  async getNotGrantedPermissions(pkg) {
+    const grantedPermissions = await this.getGrantedPermissions(pkg)
+    const permissions = await this.getPermissions(pkg)
+    const notGrantedPermissions = _
+            .chain(permissions)
+            .difference(grantedPermissions)
+            .uniq()
+            .value()
+    return notGrantedPermissions
+  }
 
   /**
    * click (x,y)
@@ -217,9 +268,9 @@ export default Device
 // const deviceId = 'DU2SSE1478031311'
 // // const deviceId = '080539a400e358f3'
 
-// const apk = 'assets/cxnt.apk'
+// // const apk = 'assets/cxnt.apk'
 // const device = new Device(deviceId)
-// device.getPermissions(apk).then(permissions => {
+// device.getNotGrantedPermissions('com.cvicse.zhnt').then(permissions => {
 //   console.log(permissions)
 // })
 

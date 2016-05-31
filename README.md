@@ -116,9 +116,25 @@ const device = new Device(deviceId)
    * get [adbkit-logcat](https://www.npmjs.com/package/adbkit-logcat) client
    * @return {client}
 
-### getPermissions(apk)
+### getPermissionsFromApk(apk)
    * Static
    * get permissions of apk, make sure you can call aapt from command line
    * @param  {String} apk path
    * @return {String}
 
+### getPermissions(pkg)
+   * getPermissions pkg
+   * @param  {String} pkg package of the app
+   * @return {Promise} permissions [String]
+
+### getGrantedPermissions(pkg) 
+   * adb shell dumpsys package com.cvicse.zhnt | grep android.permission
+   * get granted permissions
+   * @param  {String} pkg package of the app
+   * @return {Promise} permissions [String] granted permissions
+
+### getNotGrantedPermissions(pkg)
+   * get not granted permissions
+   * @param  {String} pkg package of the app
+   * @return {Promise} notGrantedPermissions [String] not granted permissions
+  
