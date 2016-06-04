@@ -13,43 +13,6 @@ class Device {
   }
 
   /**
-   * pm grant <PACKAGE_NAME> <PERMISSION>
-   */
-  // async grantPermission(pkg, permission) {
-  //   const cmd = `pm grant ${pkg} ${permission}`
-  //   await this.adbshell(cmd)
-  // }
-
-  /**
-   * sleep for ms time
-   * @param  {Integer} ms time in ms
-   * @return {Promise}
-   */
-  sleep(ms) {
-    return new Promise((resolve) => { setTimeout(resolve, ms) })
-  }
-
-  /**
-   * get the ids of online connected devices
-   * @return {Promise } ids [String] 
-   */
-  async getOnlineDeviceIds() {
-    const devices = await client.listDevices()
-    const ids = _.map(devices, device => {
-      return device.id
-    })
-    return ids
-  }
-
-  /**
-   * get [adbkit-logcat](https://www.npmjs.com/package/adbkit-logcat) client
-   * @return {client}
-   */
-  logcat() {
-    return client.openLogcat(this.deviceId, { clear: true })
-  }
-
-  /**
    * run adb shell commmand and get the output
    * @param  {String} cmd command to run
    * @return {Promise} output
@@ -69,13 +32,83 @@ class Device {
    * @param  {String} cmd to run
    * @return {Promise} stdout || stderr
    */
-  static shell(cmd) {
+  shell(cmd) {
     return new Promise((resolve, reject) => {
       exec(cmd, (err, stdout, stderr) => {
         if (err) reject(err)
         else resolve(stdout || stderr)
       })
     })
+  }
+
+  /**
+   * sleep for ms time
+   * @param  {Integer} ms time in ms
+   * @return {Promise}
+   */
+  sleep(ms) {
+    return new Promise((resolve) => { setTimeout(resolve, ms) })
+  }
+
+  // TODO : test
+  async waitForDevice() {
+    const WAIT_TIME = 10
+    const cmd = 'adb wait-for-device'
+    const bootcmd = 'getprop init.svc.bootanim'
+    await this.shell(cmd)
+    for (let i = WAIT_TIME - 1; i >= 0; i--) {
+      const out = (await this.adbshell(bootcmd)).split()[0]
+      if (out === 'stopped') break
+      await this.sleep(2000)
+    }
+  }
+
+  /**
+   * pm grant <PACKAGE_NAME> <PERMISSION>
+   */
+  // async grantPermission(pkg, permission) {
+  //   const cmd = `pm grant ${pkg} ${permission}`
+  //   await this.adbshell(cmd)
+  // }
+
+
+  /**
+   * am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact 
+   * -e name 'Donald Duck' -e phone 555-1234
+   */
+  async addContact(contactData) {
+    const cmd = `am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact ${contactData}`
+    await this.adbshell(cmd)
+    await this.sleep(2000)
+    await this.back()
+    await this.sleep(2000)
+    await this.back()
+  }
+
+
+  // async addContactFromCSV(csvpath) {
+  //   const cmd = `am start -t "text/csv" -d ${csvpath} -a android.intent.action.VIEW com.android.contacts`
+  //   await this.adbshell(cmd)
+  // }
+
+  /**
+   * get the ids of online connected devices
+   * @return {Promise } ids [String]
+   */
+  static async getOnlineDeviceIds() {
+    const devices = await client.listDevices()
+    const ids = _.map(devices, device => {
+      return device.id
+    })
+    return ids
+  }
+
+  /**
+   * get [adbkit-logcat](https://www.npmjs.com/package/adbkit-logcat) client
+   * @return {client}
+   */
+  logcat() {
+    return client.openLogcat(this.deviceId, { clear: true })
   }
 
   /**
@@ -98,23 +131,23 @@ class Device {
     return client.install(this.deviceId, apk)
   }
 
-  /**
-   * Static
-   * get permissions of apk, make sure you can call aapt from command line
-   * @param  {String} apk path
-   * @return {Promise} permissions [String]
-   */
-  static async getPermissionsFromApk(apk) {
-    const cmd = `aapt d permissions ${apk}`
-    const output = await this.shell(cmd)
-    const permissions = _
-          .chain(output)
-          .split('\n')
-          .filter(line => line.startsWith('uses-permission'))
-          .map(line => line.split(' ')[1].slice(6, -1))
-          .value()
-    return permissions
-  }
+  // /**
+  //  * Static
+  //  * get permissions of apk, make sure you can call aapt from command line
+  //  * @param  {String} apk path
+  //  * @return {Promise} permissions [String]
+  //  */
+  // static async getPermissionsFromApk(apk) {
+  //   const cmd = `aapt d permissions ${apk}`
+  //   const output = await this.shell(cmd)
+  //   const permissions = _
+  //         .chain(output)
+  //         .split('\n')
+  //         .filter(line => line.startsWith('uses-permission'))
+  //         .map(line => line.split(' ')[1].slice(6, -1))
+  //         .value()
+  //   return permissions
+  // }
 
   /**
    * getPermissions pkg
@@ -266,13 +299,22 @@ export default Device
  */
 
 // const deviceId = 'DU2SSE1478031311'
-// // const deviceId = '080539a400e358f3'
+// const deviceId = 'emulator-5554'
 
 // // const apk = 'assets/cxnt.apk'
+// const contacts = 'assets/data.csv'
 // const device = new Device(deviceId)
-// device.getNotGrantedPermissions('com.cvicse.zhnt').then(permissions => {
-//   console.log(permissions)
+// // device.getNotGrantedPermissions('com.cvicse.zhnt').then(permissions => {
+// //   console.log(permissions)
+// // }
+// device.addContactFromCSV(contacts)
+// .then(() => {
+//   console.log('add contact')
 // })
+// .catch((err) => {
+//   console.log(err)
+// })
+
 
 // device.logcat().then((logcat) => {
 //   logcat.includeAll('JavaBinder',6)

@@ -13,8 +13,8 @@
     "url": "git+git@github.com:open-nata/nata-device.git"
   },
   "keywords": [
-    "node",
-    "es6",
+    "adb",
+    "device",
     "nata",
     "android"
   ],

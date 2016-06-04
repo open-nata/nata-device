@@ -1,3 +1,6 @@
+nata-device
+=====
+
 <p align="center"><a href="http://mclspace.com" target="_blank"><img width="400" src="http://7pun7p.com1.z0.glb.clouddn.com/image/nata-banner.png"></a></p>
 
 
@@ -116,11 +119,11 @@ const device = new Device(deviceId)
    * get [adbkit-logcat](https://www.npmjs.com/package/adbkit-logcat) client
    * @return {client}
 
-### getPermissionsFromApk(apk)
+<!-- ### getPermissionsFromApk(apk)
    * Static
    * get permissions of apk, make sure you can call aapt from command line
    * @param  {String} apk path
-   * @return {String}
+   * @return {String} -->
 
 ### getPermissions(pkg)
    * getPermissions pkg
