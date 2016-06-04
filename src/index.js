@@ -255,10 +255,10 @@ class Device {
    * Dump ui xml and pull it to local temp file
    * @return {Promise} resolve the target xml file
    */
-  async dumpUI() {
+  async dumpUI(target = `${os.tmpdir()}/dumpfile.xml`) {
     const source = '/storage/sdcard0/window_dump.xml'
     const cmd = `uiautomator dump ${source}`
-    const target = `${os.tmpdir()}/dumpfile.xml`
+    // const target = `${os.tmpdir()}/dumpfile.xml`
     await this.adbshell(cmd)
     return await this.pullFile(source, target)
   }
@@ -327,7 +327,9 @@ export default Device
 //   })
 // })
 
-// // device.dumpUI().then((output) => console.log(output))
+// import path from 'path'
+// const filepath = path.join(__dirname, '../assets/dump.xml')
+// device.dumpUI(filepath).then((output) => console.log(output))
 // // device.getFocusedPackageAndActivity().then((output) => console.log(output))
 // // device.getCurrentActivity().then((act) => console.log(act))
 // // device.getCurrentPackageName().then((pkg) => console.log(pkg))

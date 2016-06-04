@@ -90,8 +90,8 @@ const device = new Device(deviceId)
    * get current activity
    * @return {Promise}
 
-### dumpUI()
-   * Dump ui xml and pull it to local temp file
+### dumpUI(target)
+   * Dump ui xml and pull it to target file(default :local temp file)
    * @return {Promise} resolve the target xml file
 
 ### startActivity(component)
@@ -140,4 +140,9 @@ const device = new Device(deviceId)
    * get not granted permissions
    * @param  {String} pkg package of the app
    * @return {Promise} notGrantedPermissions [String] not granted permissions
+  
+### install(apk)
+   * install apk
+   * @param  {String} apk path
+   * @return {Promise}
   
