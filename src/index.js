@@ -64,6 +64,19 @@ class Device {
   }
 
   /**
+   * adb shell am broadcast -a edu.gatech.m3.emma.COLLECT_COVERAGE
+   * adb pull /mnt/sdcard/coverage.ec $1/coverage$i.ec
+   * collect Coverage through broadcast edu.gatech.m3.emma.COLLECT_COVERAGE
+   * @param  {String} target path to store the coverage file
+   * @return {Promise}
+   */
+  async collectCoverage(target) {
+    const cmd = 'am broadcast -a edu.gatech.m3.emma.COLLECT_COVERAGE'
+    await this.adbshell(cmd)
+    await this.pullFile('/mnt/sdcard/coverage.ec', target)
+  }
+
+  /**
    * pm grant <PACKAGE_NAME> <PERMISSION>
    */
   // async grantPermission(pkg, permission) {
@@ -73,11 +86,12 @@ class Device {
 
 
   /**
-   * am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact 
+   * am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact
    * -e name 'Donald Duck' -e phone 555-1234
    */
   async addContact(contactData) {
-    const cmd = `am start -a android.intent.action.INSERT -t vnd.android.cursor.dir/contact ${contactData}`
+    const cmd = `am start -a android.intent.action.INSERT 
+    -t vnd.android.cursor.dir/contact ${contactData}`
     await this.adbshell(cmd)
     await this.sleep(2000)
     await this.back()
@@ -87,7 +101,8 @@ class Device {
 
 
   // async addContactFromCSV(csvpath) {
-  //   const cmd = `am start -t "text/csv" -d ${csvpath} -a android.intent.action.VIEW com.android.contacts`
+  //   const cmd = `am start -t "text/csv" -d ${csvpath}
+  //   -a android.intent.action.VIEW com.android.contacts`
   //   await this.adbshell(cmd)
   // }
 
