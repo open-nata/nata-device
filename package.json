@@ -1,6 +1,6 @@
 {
   "name": "nata-device",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "nata device for android",
   "main": "index.js",
   "scripts": {
