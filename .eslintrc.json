@@ -8,9 +8,6 @@
         "mocha": true,
         "node": true
     },
-    "plugins": [
-        "react"
-    ],
     "rules": {
         "strict": 0,
         "semi": [2, "never"],

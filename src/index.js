@@ -115,32 +115,32 @@ class Device {
     })
   }
 
-  //TODO : test
+  // TODO : test
   getModel() {
     return this.adbshell('getprop ro.product.model')
   }
-  //TODO : test
+  // TODO : test
   getCpuABI() {
     return this.adbshell('getprop ro.product.cpu.abi')
   }
-  //TODO : test
+  // TODO : test
   getAndroidVersion() {
     return this.adbshell('getprop ro.build.version.release')
   }
-  //TODO : test
+  // TODO : test
   getDeviceId() {
     return this.adbshell('getprop ro.boot.serialno')
   }
-  //TODO : test
+  // TODO : test
   getManufacturer() {
     return this.adbshell('getprop ro.product.manufacturer')
   }
-  //TODO : test
+  // TODO : test
   async getSdkVersion() {
     const sdkVersion = await this.adbshell('getprop ro.build.version.sdk')
     return parseInt(sdkVersion.trim(), 10)
   }
-  //TODO : test
+  // TODO : test
   async getScreenResolution() {
     const regexp = /[0-9]+/gi
     const output = await this.shell("adb shell dumpsys display | grep PhysicalDisplayInfo")
@@ -148,8 +148,6 @@ class Device {
 
     return `${array[0]}x${array[1]}`
   }
-
-
 
   /**
    * pm grant <PACKAGE_NAME> <PERMISSION>
