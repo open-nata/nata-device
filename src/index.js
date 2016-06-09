@@ -19,8 +19,7 @@ class Device {
    * @return {Promise } devices[Device]
    */
   static async getOnlineDevices() {
-    const devices = await client.listDevices()
-    return devices
+    return client.listDevices()
   }
 
   /**
