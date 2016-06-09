@@ -23,6 +23,17 @@ class Device {
   }
 
   /**
+   * check if device is online
+   * @param deviceId device id
+   * @returns {boolean} whether device is online
+   */
+  static async isDeviceOnline(deviceId) {
+    const devices = await this.getOnlineDevices()
+    const index = _.findIndex(devices, device => device.id === deviceId)
+    return index !== -1
+  }
+
+  /**
    * run adb shell commmand and get the output
    * @param  {String} cmd command to run
    * @return {Promise} output
@@ -37,7 +48,6 @@ class Device {
   }
 
   /**
-   * Static
    * run shell command and get the output
    * @param  {String} cmd to run
    * @return {Promise} stdout || stderr
@@ -105,33 +115,32 @@ class Device {
     })
   }
 
-
-
+  //TODO : test
   getModel() {
     return this.adbshell('getprop ro.product.model')
   }
-
+  //TODO : test
   getCpuABI() {
     return this.adbshell('getprop ro.product.cpu.abi')
-  } 
-
+  }
+  //TODO : test
   getAndroidVersion() {
     return this.adbshell('getprop ro.build.version.release')
   }
-
+  //TODO : test
   getDeviceId() {
     return this.adbshell('getprop ro.boot.serialno')
   }
-
+  //TODO : test
   getManufacturer() {
     return this.adbshell('getprop ro.product.manufacturer')
   }
-
+  //TODO : test
   async getSdkVersion() {
     const sdkVersion = await this.adbshell('getprop ro.build.version.sdk')
     return parseInt(sdkVersion.trim(), 10)
   }
-
+  //TODO : test
   async getScreenResolution() {
     const regexp = /[0-9]+/gi
     const output = await this.shell("adb shell dumpsys display | grep PhysicalDisplayInfo")

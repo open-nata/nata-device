@@ -38,6 +38,19 @@ device.startActivity(component).then(() => {
 
 ```
 
+# Static methods
+### getOnlineDevices()
+   * get online connected devices
+   * devices An array of device objects. Device { id , type : enum[emulator, device, offline]}
+   * @return {Promise } devices[Device]
+
+### isDeviceOnline(deviceId)
+   * check if device is online
+   * @param deviceId device id
+   * @returns {boolean} whether device is online
+
+
+
 # API
 ### constructor(deviceId)
 The constructor of Device class
@@ -111,7 +124,6 @@ const device = new Device(deviceId)
    * @return {Promise }
 
 ### shell(cmd)
-   * Static
    * run shell command and get the output
    * @param  {String} cmd to run
    * @return {Promise}
