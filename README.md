@@ -147,3 +147,16 @@ const device = new Device(deviceId)
    * @param  {String} apk path
    * @return {Promise}
   
+### getDeviceInfo()
+   * get device info including name,id,version,sdk,cpu,manufactur and resolution
+   * @returns {Promise}
+
+
+# DeviceInfo
+- name
+- id
+- verison
+- sdk
+- cpu
+- manufactur
+- resolution

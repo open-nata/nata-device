@@ -86,7 +86,10 @@ class Device {
     await this.pullFile('/mnt/sdcard/coverage.ec', target)
   }
 
-
+  /**
+   * get device info including name,id,version,sdk,cpu,manufactur and resolution
+   * @returns {Promise}
+   */
   async getDeviceInfo() {
     return await Promise.all([client.getProperties(this.deviceId), this.getScreenResolution()]).then((values) => {
       const info = new DeviceInfo()
