@@ -105,8 +105,9 @@ const device = new Device(deviceId)
    * @param  {String} target target file path of the local file system
    * @return {Promise} target file path
 
-### getOnlineDeviceIds()
-   * get the ids of online connected devices
+### getOnlineDevices()
+   * get online connected devices
+   * devices An array of device objects. Device { id , type : enum[emulator, device, offline]}
    * @return {Promise }
 
 ### shell(cmd)

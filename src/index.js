@@ -4,12 +4,23 @@ import os from 'os'
 import fs from 'fs'
 import { exec } from 'child_process'
 import AndroidKeyCode from './AndroidKeyCode.js'
+import DeviceInfo from './DeviceInfo.js'
 
 const client = adb.createClient()
 
 class Device {
   constructor(deviceId) {
     this.deviceId = deviceId
+  }
+
+  /**
+   * get online connected devices
+   * devices An array of device objects. Device { id , type : enum[emulator, device, offline]}
+   * @return {Promise } devices[Device]
+   */
+  static async getOnlineDevices() {
+    const devices = await client.listDevices()
+    return devices
   }
 
   /**
@@ -76,6 +87,59 @@ class Device {
     await this.pullFile('/mnt/sdcard/coverage.ec', target)
   }
 
+
+  async getDeviceInfo() {
+    return await Promise.all([client.getProperties(this.deviceId), this.getScreenResolution()]).then((values) => {
+      const info = new DeviceInfo()
+      const properties = values[0]
+      info.name = properties['ro.product.model']
+      info.id = properties['ro.boot.serialno']
+      info.version = properties['ro.build.version.release']
+      info.sdk = parseInt(properties['ro.build.version.sdk'].trim(), 10)
+      info.cpu = properties['ro.product.cpu.abi']
+      info.manufacturer = properties['ro.product.manufacturer']
+      info.resolution = values[1]
+      return info
+    })
+  }
+
+
+
+  getModel() {
+    return this.adbshell('getprop ro.product.model')
+  }
+
+  getCpuABI() {
+    return this.adbshell('getprop ro.product.cpu.abi')
+  } 
+
+  getAndroidVersion() {
+    return this.adbshell('getprop ro.build.version.release')
+  }
+
+  getDeviceId() {
+    return this.adbshell('getprop ro.boot.serialno')
+  }
+
+  getManufacturer() {
+    return this.adbshell('getprop ro.product.manufacturer')
+  }
+
+  async getSdkVersion() {
+    const sdkVersion = await this.adbshell('getprop ro.build.version.sdk')
+    return parseInt(sdkVersion.trim(), 10)
+  }
+
+  async getScreenResolution() {
+    const regexp = /[0-9]+/gi
+    const output = await this.shell("adb shell dumpsys display | grep PhysicalDisplayInfo")
+    const array = output.match(regexp)
+
+    return `${array[0]}x${array[1]}`
+  }
+
+
+
   /**
    * pm grant <PACKAGE_NAME> <PERMISSION>
    */
@@ -105,19 +169,7 @@ class Device {
   //   -a android.intent.action.VIEW com.android.contacts`
   //   await this.adbshell(cmd)
   // }
-
-  /**
-   * get the ids of online connected devices
-   * @return {Promise } ids [String]
-   */
-  static async getOnlineDeviceIds() {
-    const devices = await client.listDevices()
-    const ids = _.map(devices, device => {
-      return device.id
-    })
-    return ids
-  }
-
+  
   /**
    * get [adbkit-logcat](https://www.npmjs.com/package/adbkit-logcat) client
    * @return {client}
