@@ -22,6 +22,10 @@ class Device {
     return client.listDevices()
   }
 
+  static getTracker() {
+    return client.trackDevices()
+  }
+
   /**
    * check if device is online
    * @param deviceId device id
@@ -69,6 +73,8 @@ class Device {
   sleep(ms) {
     return new Promise((resolve) => { setTimeout(resolve, ms) })
   }
+
+
 
   // TODO : test
   async waitForDevice() {
