@@ -74,8 +74,6 @@ class Device {
     return new Promise((resolve) => { setTimeout(resolve, ms) })
   }
 
-
-
   // TODO : test
   async waitForDevice() {
     const WAIT_TIME = 10
@@ -106,18 +104,22 @@ class Device {
    * get device info including name,id,version,sdk,cpu,manufactur and resolution
    * @returns {Promise}
    */
-  async getDeviceInfo() {
-    return await Promise.all([client.getProperties(this.deviceId), this.getScreenResolution()]).then((values) => {
-      const info = new DeviceInfo()
-      const properties = values[0]
-      info.name = properties['ro.product.model']
-      info.id = properties['ro.boot.serialno']
-      info.version = properties['ro.build.version.release']
-      info.sdk = parseInt(properties['ro.build.version.sdk'].trim(), 10)
-      info.cpu = properties['ro.product.cpu.abi']
-      info.manufacturer = properties['ro.product.manufacturer']
-      info.resolution = values[1]
-      return info
+  getDeviceInfo() {
+    return new Promise((resolve,reject) => {
+      Promise.all([client.getProperties(this.deviceId), this.getScreenResolution()])
+      .then((values) => {
+        const info = new DeviceInfo()
+        const properties = values[0]
+        info.name = properties['ro.product.model']
+        info.id = properties['ro.boot.serialno']
+        info.version = properties['ro.build.version.release']
+        info.sdk = parseInt(properties['ro.build.version.sdk'].trim(), 10)
+        info.cpu = properties['ro.product.cpu.abi']
+        info.manufacturer = properties['ro.product.manufacturer']
+        info.resolution = values[1]
+        resolve(info)
+      })
+      .catch(err => reject(err))
     })
   }
 
@@ -149,7 +151,7 @@ class Device {
   // TODO : test
   async getScreenResolution() {
     const regexp = /[0-9]+/gi
-    const output = await this.shell("adb shell dumpsys display | grep PhysicalDisplayInfo")
+    const output = await this.shell('adb shell dumpsys display | grep PhysicalDisplayInfo')
     const array = output.match(regexp)
 
     return `${array[0]}x${array[1]}`
@@ -370,6 +372,7 @@ class Device {
         transfer.on('error', reject)
         transfer.pipe(fs.createWriteStream(target))
       })
+      .catch(err => reject(err))
     })
   }
 }
