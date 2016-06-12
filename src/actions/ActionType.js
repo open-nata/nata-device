@@ -1,4 +1,5 @@
 export default {
+  UNKNOWN: 'Unknown',
   CLICK: 'Click',
   LONG_CLICK: 'LongClick',
   SWIPE: 'Swipe',

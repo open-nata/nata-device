@@ -5,32 +5,22 @@ class LongClickAction extends Action {
   constructor(device, widget) {
     super(ActionType.LONG_CLICK)
     this._device = device
-    this._widget = widget
 
-    this._X = widget.centerX
-    this._Y = widget.centerY
-
-    this._startX = widget.startX
-    this._startY = widget.startY
-    this._endX = widget.endX
-    this._endY = widget.endY
+    this._startX = widget.startX || 0
+    this._startY = widget.startY || 0
+    this._endX = widget.endX || 0
+    this._endY = widget.endY || 0
   }
 
   fire() {
-    this._device.longClick(this.X, this.Y)
+    const X = this._startX + 1
+    const Y = this._startY + 1
+    this._device.longClick(X, Y)
   }
 
   toCommand() {
     const at = `@${this.startX},${this.startY}x${this.endX},${this.endY}`
-    return `${this.type} ${at} ${this.X} ${this.Y}`
-  }
-
-  get X() {
-    return this._X
-  }
-
-  get Y() {
-    return this._Y
+    return `${this.type} ${at}`
   }
 
   get startX() {

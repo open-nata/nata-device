@@ -7,6 +7,7 @@ import AndroidKeyCode from './AndroidKeyCode.js'
 import DeviceInfo from './DeviceInfo.js'
 import utils from './utils.js'
 import ActionFactory from './actions/ActionFactory.js'
+import ActionParser from './actions/ActionParser.js'
 
 const client = adb.createClient()
 
@@ -38,9 +39,6 @@ class Device {
     const index = _.findIndex(devices, device => device.id === deviceId)
     return index !== -1
   }
-
-
-
 
   /**
    * run adb shell commmand and get the output
@@ -191,7 +189,7 @@ class Device {
   //   -a android.intent.action.VIEW com.android.contacts`
   //   await this.adbshell(cmd)
   // }
-  
+
   /**
    * get [adbkit-logcat](https://www.npmjs.com/package/adbkit-logcat) client
    * @return {client}
@@ -203,7 +201,7 @@ class Device {
   /**
    * clear app data of pkg
    * @param  {String} pkg  pkg to be cleared
-   * @return {Promise} wheather success to delete
+   * @return {Boolean} wheather success to delete
    */
   async clearAppData(pkg) {
     const cmd = `pm clear ${pkg}`
@@ -229,13 +227,11 @@ class Device {
   async getPermissionsFromApk(apk) {
     const cmd = `aapt d permissions ${apk}`
     const output = await this.shell(cmd)
-    const permissions = _
-           .chain(output)
+    return _.chain(output)
            .split('\n')
            .filter(line => line.startsWith('uses-permission'))
            .map(line => line.split(' ')[1].slice(6, -1))
            .value()
-    return permissions
   }
 
   /**
@@ -246,8 +242,7 @@ class Device {
   async getPermissions(pkg) {
     const codePath = (await this.adbshell(`dumpsys package ${pkg} | grep codePath`)).trim().slice(9)
     const apkPath = await this.pullFile(codePath, `${os.tmpdir()}/app.apk`)
-    const permissions = await this.getPermissionsFromApk(apkPath)
-    return permissions
+    return await this.getPermissionsFromApk(apkPath)
   }
 
   /**
@@ -258,12 +253,10 @@ class Device {
    */
   async getGrantedPermissions(pkg) {
     const output = await this.adbshell(`dumpsys package ${pkg} | grep android.permission`)
-    const permissions = _
-            .chain(output)
+    return _.chain(output)
             .split('\n')
             .map(line => line.trim())
             .value()
-    return permissions
   }
 
   /**
@@ -274,12 +267,10 @@ class Device {
   async getNotGrantedPermissions(pkg) {
     const grantedPermissions = await this.getGrantedPermissions(pkg)
     const permissions = await this.getPermissions(pkg)
-    const notGrantedPermissions = _
-            .chain(permissions)
+    return _.chain(permissions)
             .difference(grantedPermissions)
             .uniq()
             .value()
-    return notGrantedPermissions
   }
 
   /**
@@ -380,7 +371,7 @@ class Device {
   /**
    * 上滑控件
    */
-  swipeToUp( X1, Y1, X2, Y2) {
+  swipeToUp(X1, Y1, X2, Y2) {
     const startX = X1 + 0.5 * (X2 - X1)
     const startY = Y1 + 0.7 * (Y2 - Y1)
     const endX = X1 + 0.5 * (X2 - X1)
@@ -449,7 +440,11 @@ class Device {
   async getUIActions() {
     const xmlFile = await this.dumpUI()
     const widgets = await utils.getWidgetsFromXml(xmlFile)
-    let actions = ActionFactory.getActionsFromWidgets(this, widgets)
+    return ActionFactory.getActionsFromWidgets(this, widgets)
+  }
+
+  async getUIActionCommands() {
+    let actions = await this.getUIActions()
     actions = _.map(actions, (action) => {
       return action.toCommand()
     })
@@ -457,7 +452,13 @@ class Device {
   }
 
   async executeAction(action) {
+    await ActionParser.parse(this, action).fire()
+  }
 
+  executeActions(actions) {
+    _.forEach(actions, async (action) => {
+      await this.executeAction(action)
+    })
   }
 
   /**

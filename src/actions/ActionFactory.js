@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import TapAction from './ClickAction.js'
+import ClickAction from './ClickAction.js'
 import TextInputAction from './TextInputAction.js'
 import SwipeAction from './SwipeAction.js'
 import LongClickAction from './LongClickAction.js'
@@ -30,7 +30,7 @@ function getActionsFromWidgets(device, widgets) {
         || widget.className === 'android.widget.CheckedTextView'
         || widget.className === 'android.widget.CheckBox'
     ) && widget.clickable === 'true') {
-      actions.push(new TapAction(device, widget))
+      actions.push(new ClickAction(device, widget))
     }
 
     if (widget.longClickable === 'true') {

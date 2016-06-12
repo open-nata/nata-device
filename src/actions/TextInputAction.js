@@ -2,23 +2,22 @@ import Action from './Action.js'
 import ActionType from './ActionType.js'
 
 class TextInputAction extends Action {
-  constructor(widget) {
+  constructor(device, widget, text) {
     super(ActionType.INPUT)
-    this._widget = widget
+    this._device = device
 
-    this._X = widget.centerX
-    this._Y = widget.centerY
+    this._startX = widget.startX || 0
+    this._startY = widget.startY || 0
+    this._endX = widget.endX || 0
+    this._endY = widget.endY || 0
 
-    this._startX = widget.startX
-    this._startY = widget.startY
-    this._endX = widget.endX
-    this._endY = widget.endY
-
-    this._text = 'text'
+    this._text = text || 'text'
   }
 
   fire() {
-    this._device.longClick(this.X, this.Y)
+    const X = this._startX + 1
+    const Y = this._startY + 1
+    this._device.longClick(X, Y)
     this._device.sendText(this.text)
     this._device.hideSoftKeyBoard()
   }
@@ -26,15 +25,7 @@ class TextInputAction extends Action {
 
   toCommand() {
     const at = `@${this.startX},${this.startY}x${this.endX},${this.endY}`
-    return `${this.type} ${at} ${this.X} ${this.Y} ${this.text}`
-  }
-
-  get X() {
-    return this._X
-  }
-
-  get Y() {
-    return this._Y
+    return `${this.type} ${at} ${this.text}`
   }
 
   get startX() {
