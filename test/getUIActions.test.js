@@ -13,8 +13,8 @@ describe('testing getUIActions', () => {
     this.timeout(20000)
     device.getUIActions()
     .then(actions => {
-
-      console.log(actions)
+      actions.should.be.instanceOf(Array)
+      actions.length.should.not.be.equal(0)
       done()
     })
     .catch(err => {

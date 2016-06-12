@@ -360,7 +360,6 @@ class Device {
   async getUIActions() {
     const xmlFile = await this.dumpUI()
     const widgets = await utils.getWidgetsFromXml(xmlFile)
-    console.log(widgets)
     let actions = ActionFactory.getActionsFromWidgets(widgets)
     actions = _.map(actions, (action) => {
       return action.toCommand()
