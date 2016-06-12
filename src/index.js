@@ -5,6 +5,9 @@ import fs from 'fs'
 import { exec } from 'child_process'
 import AndroidKeyCode from './AndroidKeyCode.js'
 import DeviceInfo from './DeviceInfo.js'
+import utils from './utils.js'
+import ActionFactory from './actions/ActionFactory.js'
+import path from 'path'
 
 const client = adb.createClient()
 
@@ -105,7 +108,7 @@ class Device {
    * @returns {Promise}
    */
   getDeviceInfo() {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       Promise.all([client.getProperties(this.deviceId), this.getScreenResolution()])
       .then((values) => {
         const info = new DeviceInfo()
@@ -215,23 +218,23 @@ class Device {
     return client.install(this.deviceId, apk)
   }
 
-  // /**
-  //  * Static
-  //  * get permissions of apk, make sure you can call aapt from command line
-  //  * @param  {String} apk path
-  //  * @return {Promise} permissions [String]
-  //  */
-  // static async getPermissionsFromApk(apk) {
-  //   const cmd = `aapt d permissions ${apk}`
-  //   const output = await this.shell(cmd)
-  //   const permissions = _
-  //         .chain(output)
-  //         .split('\n')
-  //         .filter(line => line.startsWith('uses-permission'))
-  //         .map(line => line.split(' ')[1].slice(6, -1))
-  //         .value()
-  //   return permissions
-  // }
+  /**
+   * Static
+   * get permissions of apk, make sure you can call aapt from command line
+   * @param  {String} apk path
+   * @return {Promise} permissions [String]
+   */
+  async getPermissionsFromApk(apk) {
+    const cmd = `aapt d permissions ${apk}`
+    const output = await this.shell(cmd)
+    const permissions = _
+           .chain(output)
+           .split('\n')
+           .filter(line => line.startsWith('uses-permission'))
+           .map(line => line.split(' ')[1].slice(6, -1))
+           .value()
+    return permissions
+  }
 
   /**
    * getPermissions pkg
@@ -241,7 +244,7 @@ class Device {
   async getPermissions(pkg) {
     const codePath = (await this.adbshell(`dumpsys package ${pkg} | grep codePath`)).trim().slice(9)
     const apkPath = await this.pullFile(codePath, `${os.tmpdir()}/app.apk`)
-    const permissions = await Device.getPermissionsFromApk(apkPath)
+    const permissions = await this.getPermissionsFromApk(apkPath)
     return permissions
   }
 
@@ -339,12 +342,30 @@ class Device {
    * Dump ui xml and pull it to local temp file
    * @return {Promise} resolve the target xml file
    */
-  async dumpUI(target = `${os.tmpdir()}/dumpfile.xml`) {
+  async dumpUI(target) {
+    if (!target) {
+      const resultDir = `${os.tmpdir()}/${this.deviceId}`
+      if (!fs.existsSync(resultDir)) {
+        fs.mkdirSync(resultDir)
+      }
+      target = `${resultDir}/dumpfile.xml`
+    }
     const source = '/storage/sdcard0/window_dump.xml'
     const cmd = `uiautomator dump ${source}`
     // const target = `${os.tmpdir()}/dumpfile.xml`
     await this.adbshell(cmd)
     return await this.pullFile(source, target)
+  }
+
+  async getUIActions() {
+    const xmlFile = await this.dumpUI()
+    const widgets = await utils.getWidgetsFromXml(xmlFile)
+    console.log(widgets)
+    let actions = ActionFactory.getActionsFromWidgets(widgets)
+    actions = _.map(actions, (action) => {
+      return action.toCommand()
+    })
+    return actions
   }
 
   /**
