@@ -1,15 +1,23 @@
 import Action from './Action.js'
+import ActionType from './ActionType.js'
 
 class StartAppAction extends Action {
   constructor(device, pkgAct) {
-    super('startapp')
-    this.device = device
-    this.pkgAct = pkgAct
+    super(ActionType.START_APP)
+    this._device = device
+    this._pkgAct = pkgAct
   }
 
   async fire() {
-    await this.device.startActivity(this.pkgAct)
-    await this.device.sleep(2000)
+    await this._device.startActivity(this.pkgAct)
+  }
+
+  get pkgAct() {
+    return this._pkgAct
+  }
+
+  toCommand() {
+    return `${this.type} ${this.pkgAct}`
   }
 }
 

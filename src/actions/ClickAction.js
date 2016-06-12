@@ -1,9 +1,10 @@
 import Action from './Action.js'
 import ActionType from './ActionType.js'
 
-class TapAction extends Action {
-  constructor(widget) {
-    super(ActionType.TAP)
+class ClickAction extends Action {
+  constructor(device, widget) {
+    super(ActionType.CLICK)
+    this._device = device
     this._widget = widget
 
     this._X = widget.centerX
@@ -15,23 +16,15 @@ class TapAction extends Action {
     this._endY = widget.endY
   }
 
+  fire() {
+    this._device.click(this.X, this.Y)
+  }
+
 
   toCommand() {
     const at = `@${this.startX},${this.startY}x${this.endX},${this.endY}`
     return `${this.type} ${at} ${this.X} ${this.Y}`
   }
-
-  // toObject() {
-  //   return {
-  //     type: ActionType.TAP,
-  //     startX: this.startX,
-  //     startY: this.startY,
-  //     endX: this.endX,
-  //     endY: this.endY,
-  //     X: this.X,
-  //     Y: this.Y,
-  //   }
-  // }
 
   get X() {
     return this._X
@@ -59,4 +52,4 @@ class TapAction extends Action {
 }
 
 
-export default TapAction
+export default ClickAction

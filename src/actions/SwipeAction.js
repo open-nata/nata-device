@@ -1,9 +1,11 @@
-import Action from './Action.js'
+import Action from './Action.js
 import ActionType from './ActionType.js'
+import SwipeDirection from './SwipeDirection.js'
 
 class SwipeAction extends Action {
-  constructor(widget, direction) {
+  constructor(device, widget, direction) {
     super(ActionType.INPUT)
+    this._device = device
     this._widget = widget
 
     this._X = widget.centerX
@@ -17,23 +19,19 @@ class SwipeAction extends Action {
     this._direction = direction
   }
 
+  fire() {
+    switch (this.direction){
+      case SwipeDirection.DOWN: this._device.swipeToDown(this.startX, this.startY, this.endX, this.endY);break
+      case SwipeDirection.UP: this._device.swipeToUp(this.startX, this.startY, this.endX, this.endY);break
+      case SwipeDirection.LEFT: this._device.swipeToLeft(this.startX, this.startY, this.endX, this.endY);break
+      case SwipeDirection.RIGHT:this.device.swipeToRight(this.startX, this.startY, this.endX, this.endY);break
+    }
+  }
 
   toCommand() {
     const at = `@${this.startX},${this.startY}x${this.endX},${this.endY}`
     return `${this.type} ${at} ${this.direction}`
   }
-
-  // toObject() {
-  //   return {
-  //     type: ActionType.TAP,
-  //     startX: this.startX,
-  //     startY: this.startY,
-  //     endX: this.endX,
-  //     endY: this.endY,
-  //     X: this.X,
-  //     Y: this.Y,
-  //   }
-  // }
 
   get X() {
     return this._X

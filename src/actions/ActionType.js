@@ -1,5 +1,5 @@
 export default {
-  TAP: 'Tap',
+  CLICK: 'Click',
   LONG_CLICK: 'LongClick',
   SWIPE: 'Swipe',
   INPUT: 'TextInput',

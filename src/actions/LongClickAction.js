@@ -2,8 +2,9 @@ import Action from './Action.js'
 import ActionType from './ActionType.js'
 
 class LongClickAction extends Action {
-  constructor(widget) {
+  constructor(device, widget) {
     super(ActionType.LONG_CLICK)
+    this._device = device
     this._widget = widget
 
     this._X = widget.centerX
@@ -15,6 +16,9 @@ class LongClickAction extends Action {
     this._endY = widget.endY
   }
 
+  fire() {
+    this._device.longClick(this.X, this.Y)
+  }
 
   toCommand() {
     const at = `@${this.startX},${this.startY}x${this.endX},${this.endY}`
@@ -32,6 +36,7 @@ class LongClickAction extends Action {
   get startX() {
     return this._startX
   }
+
   get endX() {
     return this._endX
   }
@@ -45,6 +50,5 @@ class LongClickAction extends Action {
   }
 
 }
-
 
 export default LongClickAction

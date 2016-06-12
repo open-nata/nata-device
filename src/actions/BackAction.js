@@ -1,13 +1,18 @@
 import Action from './Action.js'
+import ActionType from './ActionType.js'
 
 class BackAction extends Action {
   constructor(device) {
-    super('back')
-    this.device = device
+    super(ActionType.BACK)
+    this._device = device
   }
 
   async fire() {
-    await this.device.back()
+    await this._device.back()
+  }
+
+  toCommand() {
+    return this.type
   }
 }
 

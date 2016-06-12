@@ -14,7 +14,13 @@ class TextInputAction extends Action {
     this._endX = widget.endX
     this._endY = widget.endY
 
-    this._text = 'hello'
+    this._text = 'text'
+  }
+
+  fire() {
+    this._device.longClick(this.X, this.Y)
+    this._device.sendText(this.text)
+    this._device.hideSoftKeyBoard()
   }
 
 
@@ -22,18 +28,6 @@ class TextInputAction extends Action {
     const at = `@${this.startX},${this.startY}x${this.endX},${this.endY}`
     return `${this.type} ${at} ${this.X} ${this.Y} ${this.text}`
   }
-
-  // toObject() {
-  //   return {
-  //     type: ActionType.TAP,
-  //     startX: this.startX,
-  //     startY: this.startY,
-  //     endX: this.endX,
-  //     endY: this.endY,
-  //     X: this.X,
-  //     Y: this.Y,
-  //   }
-  // }
 
   get X() {
     return this._X

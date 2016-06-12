@@ -7,7 +7,6 @@ import AndroidKeyCode from './AndroidKeyCode.js'
 import DeviceInfo from './DeviceInfo.js'
 import utils from './utils.js'
 import ActionFactory from './actions/ActionFactory.js'
-import path from 'path'
 
 const client = adb.createClient()
 
@@ -39,6 +38,9 @@ class Device {
     const index = _.findIndex(devices, device => device.id === deviceId)
     return index !== -1
   }
+
+
+
 
   /**
    * run adb shell commmand and get the output
@@ -293,7 +295,7 @@ class Device {
 
   /**
    * send key event from https://developer.android.com/reference/android/view/KeyEvent.html
-   * @param  {String} keycode keycode from Android
+   * @param  {Integer} keycode keycode from Android
    * @return {Promise}
    */
   async sendKeyEvent(keycode) {
@@ -309,6 +311,93 @@ class Device {
     return this.sendKeyEvent(AndroidKeyCode.BACK)
   }
 
+  /**
+   * press home key of the device
+   * @return {Promise}
+   */
+  home() {
+    return this.sendKeyEvent(AndroidKeyCode.HOME)
+  }
+
+  /**
+   * press menu key of the device
+   * @return {Promise}
+   */
+  menu() {
+    return this.sendKeyEvent(AndroidKeyCode.MENU)
+  }
+
+  /**
+   * long click (x,y)
+   * @param x
+   * @param y
+   * @returns {Promise}
+   */
+  longClick(x, y) {
+    return this.swipe(x, y, x, y, 1500)
+  }
+
+  async sendText(text) {
+    await this.adbshell(`input text ${text}`)
+  }
+
+  hideSoftKeyBoard() {
+    return this.sendKeyEvent(AndroidKeyCode.HIDE_KEYBOARD)
+  }
+
+  async swipe(startX, startY, endX, endY, ms) {
+    const sdkVersion = await this.getSdkVersion()
+    if (sdkVersion < 19) {
+      await this.adbshell(`input swipe ${startX} ${startY} ${endX} ${endY}`)
+    } else {
+      await this.adbshell(`input swipe ${startX} ${startY} ${endX} ${endY} ${ms}`)
+    }
+  }
+
+
+  /**
+   * 左滑控件
+   */
+  swipeToLeft(X1, Y1, X2, Y2) {
+    const startX = X1 + 0.8 * (X2 - X1)
+    const startY = Y1 + 0.5 * (Y2 - Y1)
+    const endX = X1 + 0.2 * (X2 - X1)
+    const endY = Y1 + 0.5 * (Y2 - Y1)
+    this.swipe(startX, startY, endX, endY, 100)
+  }
+
+  /**
+   * 右滑控件
+   */
+  swipeToRight(X1, Y1, X2, Y2) {
+    const startX = X1 + 0.2 * (X2 - X1)
+    const startY = Y1 + 0.5 * (Y2 - Y1)
+    const endX = X1 + 0.8 * (X2 - X1)
+    const endY = Y1 + 0.5 * (Y2 - Y1)
+    this.swipe(startX, startY, endX, endY, 100)
+  }
+
+  /**
+   * 上滑控件
+   */
+  swipeToUp( X1, Y1, X2, Y2) {
+    const startX = X1 + 0.5 * (X2 - X1)
+    const startY = Y1 + 0.7 * (Y2 - Y1)
+    const endX = X1 + 0.5 * (X2 - X1)
+    const endY = Y1 + 0.3 * (Y2 - Y1)
+    this.swipe(startX, startY, endX, endY, 100)
+  }
+
+  /**
+   * 下滑控件
+   */
+  swipeToDown(X1, Y1, X2, Y2) {
+    const startX = X1 + 0.5 * (X2 - X1)
+    const startY = Y1 + 0.3 * (Y2 - Y1)
+    const endX = X1 + 0.5 * (X2 - X1)
+    const endY = Y1 + 0.7 * (Y2 - Y1)
+    this.swipe(startX, startY, endX, endY, 100)
+  }
   /**
    * get current focused package and activity
    * @return {Promise}
@@ -360,11 +449,15 @@ class Device {
   async getUIActions() {
     const xmlFile = await this.dumpUI()
     const widgets = await utils.getWidgetsFromXml(xmlFile)
-    let actions = ActionFactory.getActionsFromWidgets(widgets)
+    let actions = ActionFactory.getActionsFromWidgets(this, widgets)
     actions = _.map(actions, (action) => {
       return action.toCommand()
     })
     return actions
+  }
+
+  async executeAction(action) {
+
   }
 
   /**
@@ -398,47 +491,4 @@ class Device {
 }
 
 export default Device
-
-/**
- * tests
- */
-
-// const deviceId = 'DU2SSE1478031311'
-// const deviceId = 'emulator-5554'
-
-// // const apk = 'assets/cxnt.apk'
-// const contacts = 'assets/data.csv'
-// const device = new Device(deviceId)
-// // device.getNotGrantedPermissions('com.cvicse.zhnt').then(permissions => {
-// //   console.log(permissions)
-// // }
-// device.addContactFromCSV(contacts)
-// .then(() => {
-//   console.log('add contact')
-// })
-// .catch((err) => {
-//   console.log(err)
-// })
-
-
-// device.logcat().then((logcat) => {
-//   logcat.includeAll('JavaBinder',6)
-//   logcat.on('entry', (entry) => {
-//     console.log(`${entry.tag} :    ${entry.message}`)
-//   })
-
-//   logcat.on('finish', () => {
-
-//   })
-// })
-
-// import path from 'path'
-// const filepath = path.join(__dirname, '../assets/dump.xml')
-// device.dumpUI(filepath).then((output) => console.log(output))
-// // device.getFocusedPackageAndActivity().then((output) => console.log(output))
-// // device.getCurrentActivity().then((act) => console.log(act))
-// // device.getCurrentPackageName().then((pkg) => console.log(pkg))
-// device.startActivity('com.cvicse.zhnt/.LoadingActivity').then(() => {
-//   console.log('should start the activity')
-// })
 

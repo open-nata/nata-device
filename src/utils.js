@@ -53,14 +53,6 @@ async function getWidgetsFromXml(target) {
   return widgets
 }
 
-
-// import path from 'path'
-// const dumpfilePath = path.join(__dirname, '../../assets/dumpfile.xml')
-// getWidgetsFromXml(dumpfilePath).then((widgets) => {
-//   console.log(widgets)
-// })
-// .catch((err) => console.log(err))
-
 export default {
   getWidgetsFromXml: getWidgetsFromXml,
 }
