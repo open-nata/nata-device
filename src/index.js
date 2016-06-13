@@ -483,10 +483,11 @@ class Device {
     await ActionParser.parse(this, action).fire()
   }
 
-  executeActions(actions) {
-    _.forEach(actions, async (action) => {
-      await this.executeAction(action)
-    })
+  async executeActions(actions) {
+    for (let i = 0; i < actions.length; i++) {
+      await this.executeAction(actions[i])
+      await this.sleep(1000)
+    }
   }
 
   /**
