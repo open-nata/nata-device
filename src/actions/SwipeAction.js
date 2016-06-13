@@ -12,7 +12,7 @@ class SwipeAction extends Action {
     this._endX = widget.endX || 0
     this._endY = widget.endY || 0
 
-    this._direction = direction
+    this._direction = direction || SwipeDirection.LEFT
   }
 
   async fire() {
@@ -50,7 +50,7 @@ class SwipeAction extends Action {
   }
 
   get endY() {
-    return this._startX
+    return this._endY
   }
 
   get text() {

@@ -2,9 +2,9 @@ import Device from '../../'
 import should from 'should'
 import ActionParser from '../../lib/actions/ActionParser'
 
-describe('testing LongClickAction', () => {
+describe('testing TextInputAction', () => {
   const deviceId = 'DU2SSE1478031311'
-  const actionString = 'LongClick @782,795x1024,782'
+  const actionString = 'TextInput @255,727x990,847 15996270647'
 
   let device
 
@@ -14,7 +14,7 @@ describe('testing LongClickAction', () => {
     device = new Device(deviceId)
   })
 
-  it('should get long click action', async function (done) {
+  it('should get input action', async function (done) {
     this.timeout(20000)
     const action = ActionParser.parse(device, actionString)
     console.log(action)
@@ -26,5 +26,5 @@ describe('testing LongClickAction', () => {
 
 /**
  * npm run compile
- * mocha --compilers js:babel-core/register test/actions/LongClickAction.test.js
+ * mocha --compilers js:babel-core/register test/actions/TextInputAction.test.js
  */

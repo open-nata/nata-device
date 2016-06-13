@@ -36,7 +36,7 @@ class LongClickAction extends Action {
   }
 
   get endY() {
-    return this._startX
+    return this._endY
   }
 
 }

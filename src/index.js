@@ -59,13 +59,18 @@ class Device {
    * @param  {String} cmd to run
    * @return {Promise} stdout || stderr
    */
-  shell(cmd) {
+  static shell(cmd) {
     return new Promise((resolve, reject) => {
       exec(cmd, (err, stdout, stderr) => {
         if (err) reject(err)
         else resolve(stdout || stderr)
       })
     })
+  }
+
+  static async startServer() {
+    const cmd = 'adb start-server'
+    await Device.shell(cmd)
   }
 
   /**
@@ -82,7 +87,7 @@ class Device {
     const WAIT_TIME = 10
     const cmd = 'adb wait-for-device'
     const bootcmd = 'getprop init.svc.bootanim'
-    await this.shell(cmd)
+    await Device.shell(cmd)
     for (let i = WAIT_TIME - 1; i >= 0; i--) {
       const out = (await this.adbshell(bootcmd)).split()[0]
       if (out === 'stopped') break
@@ -154,7 +159,8 @@ class Device {
   // TODO : test
   async getScreenResolution() {
     const regexp = /[0-9]+/gi
-    const output = await this.shell('adb shell dumpsys display | grep PhysicalDisplayInfo')
+    const cmd = `adb -s ${this.deviceId} shell dumpsys display | grep PhysicalDisplayInfo`
+    const output = await Device.shell(cmd)
     const array = output.match(regexp)
 
     return `${array[0]}x${array[1]}`
@@ -226,7 +232,7 @@ class Device {
    */
   async getPermissionsFromApk(apk) {
     const cmd = `aapt d permissions ${apk}`
-    const output = await this.shell(cmd)
+    const output = await Device.shell(cmd)
     return _.chain(output)
            .split('\n')
            .filter(line => line.startsWith('uses-permission'))
@@ -349,45 +355,45 @@ class Device {
   /**
    * 左滑控件
    */
-  swipeToLeft(X1, Y1, X2, Y2) {
+  async swipeToLeft(X1, Y1, X2, Y2) {
     const startX = X1 + 0.8 * (X2 - X1)
     const startY = Y1 + 0.5 * (Y2 - Y1)
     const endX = X1 + 0.2 * (X2 - X1)
     const endY = Y1 + 0.5 * (Y2 - Y1)
-    this.swipe(startX, startY, endX, endY, 100)
+    await this.swipe(startX, startY, endX, endY, 100)
   }
 
   /**
    * 右滑控件
    */
-  swipeToRight(X1, Y1, X2, Y2) {
+  async swipeToRight(X1, Y1, X2, Y2) {
     const startX = X1 + 0.2 * (X2 - X1)
     const startY = Y1 + 0.5 * (Y2 - Y1)
     const endX = X1 + 0.8 * (X2 - X1)
     const endY = Y1 + 0.5 * (Y2 - Y1)
-    this.swipe(startX, startY, endX, endY, 100)
+    await this.swipe(startX, startY, endX, endY, 100)
   }
 
   /**
    * 上滑控件
    */
-  swipeToUp(X1, Y1, X2, Y2) {
+  async swipeToUp(X1, Y1, X2, Y2) {
     const startX = X1 + 0.5 * (X2 - X1)
     const startY = Y1 + 0.7 * (Y2 - Y1)
     const endX = X1 + 0.5 * (X2 - X1)
     const endY = Y1 + 0.3 * (Y2 - Y1)
-    this.swipe(startX, startY, endX, endY, 100)
+    await this.swipe(startX, startY, endX, endY, 100)
   }
 
   /**
    * 下滑控件
    */
-  swipeToDown(X1, Y1, X2, Y2) {
+  async swipeToDown(X1, Y1, X2, Y2) {
     const startX = X1 + 0.5 * (X2 - X1)
     const startY = Y1 + 0.3 * (Y2 - Y1)
     const endX = X1 + 0.5 * (X2 - X1)
     const endY = Y1 + 0.7 * (Y2 - Y1)
-    this.swipe(startX, startY, endX, endY, 100)
+    await this.swipe(startX, startY, endX, endY, 100)
   }
   /**
    * get current focused package and activity

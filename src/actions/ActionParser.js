@@ -18,8 +18,8 @@ function parseAt(at) {
   const coordinates = at.substring(1).split(/[,x]/)
   return {
     startX: parseInt(coordinates[0], 10),
-    endX: parseInt(coordinates[1], 10),
-    startY:parseInt(coordinates[2], 10),
+    startY: parseInt(coordinates[1], 10),
+    endX: parseInt(coordinates[2], 10),
     endY: parseInt(coordinates[3], 10),
   }
 }
@@ -43,7 +43,7 @@ function parse(device, actionString) {
     case ActionType.START_APP: action = new StartAppAction(device, pkgAct); break
     case ActionType.CLICK: action = new ClickAction(device, parseAt(at)); break
     case ActionType.LONG_CLICK: action = new LongClickAction(device, parseAt(at)); break
-    case ActionType.SWIPE : action  = new SwipeAction(device, parseAt(at), direction); break
+    case ActionType.SWIPE : action = new SwipeAction(device, parseAt(at), direction); break
     case ActionType.INPUT : action = new TextInputAction(device, parseAt(at), text); break
     default: action = new UnKnownAction(device)
   }
