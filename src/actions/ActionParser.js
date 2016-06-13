@@ -14,7 +14,7 @@ import UnKnownAction from './UnknownAction.js'
 
 import _ from 'lodash'
 
-function  parseAt(at) {
+function parseAt(at) {
   const coordinates = at.substring(1).split(/[,x]/)
   return {
     startX: parseInt(coordinates[0], 10),
@@ -51,3 +51,14 @@ function parse(device, actionString) {
   return action
 }
 
+function parseAll(device, actionStrings) {
+  return _.map(actionStrings, (actionString) => {
+    return parse(device, actionString)
+  })
+}
+
+
+export default {
+  parseAll,
+  parse,
+}

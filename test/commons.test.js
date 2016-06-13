@@ -15,6 +15,21 @@ describe('testing common actions', () => {
     isOnline.should.be.true()
     done()
   })
+
+  it('should press back key', async function (done) {
+    await device.back()
+    done()
+  })
+
+  it('should press home key', async function(done) {
+    await device.home()
+    done()
+  })
+
+  it('should press menu key', async function(done) {
+    await device.menu()
+    done()
+  })
 })
 
 

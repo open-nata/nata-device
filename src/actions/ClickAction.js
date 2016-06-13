@@ -12,10 +12,10 @@ class ClickAction extends Action {
     this._endY = widget.endY || 0
   }
 
-  fire() {
+  async fire() {
     const X = this._startX + 1
     const Y = this._startY + 1
-    this._device.click(X, Y)
+    await this._device.click(X, Y)
   }
 
 

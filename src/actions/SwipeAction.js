@@ -1,10 +1,10 @@
-import Action from './Action.js
+import Action from './Action.js'
 import ActionType from './ActionType.js'
 import SwipeDirection from './SwipeDirection.js'
 
 class SwipeAction extends Action {
   constructor(device, widget, direction) {
-    super(ActionType.INPUT)
+    super(ActionType.SWIPE)
     this._device = device
 
     this._startX = widget.startX || 0
@@ -15,12 +15,21 @@ class SwipeAction extends Action {
     this._direction = direction
   }
 
-  fire() {
-    switch (this.direction){
-      case SwipeDirection.DOWN: this._device.swipeToDown(this.startX, this.startY, this.endX, this.endY);break
-      case SwipeDirection.UP: this._device.swipeToUp(this.startX, this.startY, this.endX, this.endY);break
-      case SwipeDirection.LEFT: this._device.swipeToLeft(this.startX, this.startY, this.endX, this.endY);break
-      case SwipeDirection.RIGHT:this.device.swipeToRight(this.startX, this.startY, this.endX, this.endY);break
+  async fire() {
+    switch (this.direction) {
+      case SwipeDirection.DOWN:
+        await this._device.swipeToDown(this.startX, this.startY, this.endX, this.endY)
+        break
+      case SwipeDirection.UP:
+        await this._device.swipeToUp(this.startX, this.startY, this.endX, this.endY)
+        break
+      case SwipeDirection.LEFT:
+        await this._device.swipeToLeft(this.startX, this.startY, this.endX, this.endY)
+        break
+      case SwipeDirection.RIGHT:
+        await this._device.swipeToRight(this.startX, this.startY, this.endX, this.endY)
+        break
+      default:
     }
   }
 

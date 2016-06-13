@@ -14,12 +14,12 @@ class TextInputAction extends Action {
     this._text = text || 'text'
   }
 
-  fire() {
+  async fire() {
     const X = this._startX + 1
     const Y = this._startY + 1
-    this._device.longClick(X, Y)
-    this._device.sendText(this.text)
-    this._device.hideSoftKeyBoard()
+    await this._device.longClick(X, Y)
+    await this._device.sendText(this.text)
+    await this._device.hideSoftKeyBoard()
   }
 
 

@@ -6,7 +6,6 @@ import LongClickAction from './LongClickAction.js'
 import SwipeDirection from './SwipeDirection.js'
 
 function getActionsFromWidgets(device, widgets) {
-  console.log(widgets)
   const actions = []
   _.forEach(widgets, (widget) => {
     if (widget.enabled === 'false') {

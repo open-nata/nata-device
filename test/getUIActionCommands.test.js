@@ -1,7 +1,7 @@
 import Device from '../'
 import should from 'should'
 
-describe('testing getUIActions', () => {
+describe('testing getUIActionCommands', () => {
   const deviceId = 'DU2SSE1478031311'
   let device
 
@@ -9,9 +9,9 @@ describe('testing getUIActions', () => {
     device = new Device(deviceId)
   })
 
-  it('should get ui actions', function(done) {
+  it('should get ui action commands', function(done) {
     this.timeout(20000)
-    device.getUIActions()
+    device.getUIActionCommands()
     .then(actions => {
       actions.should.be.instanceOf(Array)
       actions.length.should.not.be.equal(0)
@@ -27,5 +27,5 @@ describe('testing getUIActions', () => {
 
 /**
  * npm run compile
- * mocha --compilers js:babel-core/register test/getUIActions.test.js
+ * mocha --compilers js:babel-core/register test/getUIActionCommands.test.js
  */
