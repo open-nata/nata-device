@@ -13,8 +13,9 @@ class CleanDataAction extends Action {
   }
 
   toCommand() {
-    return this.type
+    return `${this.type} ${this.pkg}`
   }
+
 
   get pkg() {
     return this._pkg

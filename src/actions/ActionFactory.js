@@ -1,9 +1,19 @@
 import _ from 'lodash'
+// ui actions
 import ClickAction from './ClickAction.js'
 import TextInputAction from './TextInputAction.js'
 import SwipeAction from './SwipeAction.js'
 import LongClickAction from './LongClickAction.js'
 import SwipeDirection from './SwipeDirection.js'
+
+
+// common actions
+import BackAction from './BackAction.js'
+import CleanDataAction from './CleanDataAction.js'
+import HomeAction from './HomeAction.js'
+import MenuAction from './MenuAction.js'
+import StartAppAction from './StartAppAction.js'
+
 
 function getActionsFromWidgets(device, widgets) {
   const actions = []
@@ -45,6 +55,29 @@ function getActionsFromWidgets(device, widgets) {
   return actions
 }
 
+// back, home, menu actions
+function getCommonActions(device) {
+  const actions = []
+  actions.push(new BackAction(device))
+  actions.push(new HomeAction(device))
+  actions.push(new MenuAction(device))
+
+  actions.push()
+  return actions
+}
+
+function createStartAppAction(device, pkgAct) {
+  return new StartAppAction(device, pkgAct)
+}
+
+function createCleanAppAction(device, pkg) {
+  return new CleanDataAction(device, pkg)
+}
+
+
 export default {
   getActionsFromWidgets,
+  getCommonActions,
+  createStartAppAction,
+  createCleanAppAction,
 }

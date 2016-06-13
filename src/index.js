@@ -457,6 +457,28 @@ class Device {
     return actions
   }
 
+  async getAvaliableActions() {
+    const uiActions = await this.getUIActions()
+    const commonActions = ActionFactory.getCommonActions(this)
+    return _.concat(uiActions, commonActions)
+  }
+
+  async getAvaliableActionsCommands() {
+    let actions = await this.getAvaliableActions()
+    actions = _.map(actions, (action) => {
+      return action.toCommand()
+    })
+    return actions
+  }
+
+  getStartAppAction(pkgAct) {
+    return ActionFactory.createStartAppAction(this, pkgAct)
+  }
+
+  getCleanAppAction(pkg) {
+    return ActionFactory.createCleanAppAction(this, pkg)
+  }
+
   async executeAction(action) {
     await ActionParser.parse(this, action).fire()
   }
