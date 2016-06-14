@@ -449,6 +449,11 @@ class Device {
     return ActionFactory.getActionsFromWidgets(this, widgets)
   }
 
+  async getUIWidgets() {
+    const xmlFile = await this.dumpUI()
+    return await utils.getWidgetsFromXml(xmlFile)
+  }
+
   async getUIActionCommands() {
     let actions = await this.getUIActions()
     actions = _.map(actions, (action) => {
@@ -477,6 +482,18 @@ class Device {
 
   getCleanAppAction(pkg) {
     return ActionFactory.createCleanAppAction(this, pkg)
+  }
+
+  getBackAction() {
+    return ActionFactory.createBackAction(this)
+  }
+
+  getMenuAction() {
+    return ActionFactory.createMenuAction(this)
+  }
+
+  getHomeAction() {
+    return ActionFactory.createHomeAction(this)
   }
 
   async executeAction(action) {

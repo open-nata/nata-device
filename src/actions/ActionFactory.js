@@ -74,10 +74,24 @@ function createCleanAppAction(device, pkg) {
   return new CleanDataAction(device, pkg)
 }
 
+function createBackAction(device) {
+  return new BackAction(device)
+}
+
+function createMenuAction(device) {
+  return new MenuAction(device)
+}
+
+function createHomeAction(device) {
+  return new HomeAction(device)
+}
 
 export default {
   getActionsFromWidgets,
   getCommonActions,
   createStartAppAction,
   createCleanAppAction,
+  createBackAction,
+  createMenuAction,
+  createHomeAction,
 }
