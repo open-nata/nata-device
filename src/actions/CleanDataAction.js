@@ -16,9 +16,31 @@ class CleanDataAction extends Action {
     return `${this.type} ${this.pkg}`
   }
 
-
   get pkg() {
     return this._pkg
+  }
+
+  equals(otherAction) {
+    if (this === otherAction) {
+      return true
+    }
+
+    if (otherAction === null) {
+      return false
+    }
+
+    if (!(otherAction instanceof CleanDataAction)) {
+      return false
+    }
+
+    if (this.type !== otherAction.type) {
+      return false
+    }
+    if (this.pkg !== otherAction.pkg) {
+      return false
+    }
+
+    return true
   }
 }
 

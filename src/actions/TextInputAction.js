@@ -5,6 +5,7 @@ class TextInputAction extends Action {
   constructor(device, widget, text) {
     super(ActionType.INPUT)
     this._device = device
+    this._widget = widget
 
     this._startX = widget.startX || 0
     this._startY = widget.startY || 0
@@ -43,10 +44,37 @@ class TextInputAction extends Action {
     return this._endY
   }
 
+  get widget() {
+    return this._widget
+  }
+
   get text() {
     return this._text
   }
 
+  equals(otherAction) {
+    if (this === otherAction) {
+      return true
+    }
+
+    if (otherAction === null) {
+      return false
+    }
+
+    if (!(otherAction instanceof TextInputAction)) {
+      return false
+    }
+
+    if (this.type !== otherAction.type) {
+      return false
+    }
+
+    if (!this.widget.equals(otherAction.widget)) {
+      return false
+    }
+
+    return true
+  }
 }
 
 

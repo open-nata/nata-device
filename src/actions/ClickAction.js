@@ -5,6 +5,7 @@ class ClickAction extends Action {
   constructor(device, widget) {
     super(ActionType.CLICK)
     this._device = device
+    this._widget = widget
 
     this._startX = widget.startX || 0
     this._startY = widget.startY || 0
@@ -39,6 +40,33 @@ class ClickAction extends Action {
     return this._endY
   }
 
+  get widget() {
+    return this._widget
+  }
+
+  equals(otherAction) {
+    if (this === otherAction) {
+      return true
+    }
+
+    if (otherAction === null) {
+      return false
+    }
+
+    if (!(otherAction instanceof ClickAction)) {
+      return false
+    }
+
+    if (this.type !== otherAction.type) {
+      return false
+    }
+
+    if (!this.widget.equals(otherAction.widget)) {
+      return false
+    }
+
+    return true
+  }
 }
 
 

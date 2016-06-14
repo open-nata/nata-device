@@ -14,6 +14,25 @@ class MenuAction extends Action {
   toCommand() {
     return this.type
   }
+
+  equals(otherAction) {
+    if (this === otherAction) {
+      return true
+    }
+
+    if (otherAction === null) {
+      return false
+    }
+
+    if (!(otherAction instanceof MenuAction)) {
+      return false
+    }
+
+    if (this.type !== otherAction.type) {
+      return false
+    }
+    return true
+  }
 }
 
 

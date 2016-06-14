@@ -6,6 +6,7 @@ class SwipeAction extends Action {
   constructor(device, widget, direction) {
     super(ActionType.SWIPE)
     this._device = device
+    this._widget = widget
 
     this._startX = widget.startX || 0
     this._startY = widget.startY || 0
@@ -57,10 +58,41 @@ class SwipeAction extends Action {
     return this._text
   }
 
+  get widget() {
+    return this._widget
+  }
+
   get direction() {
     return this._direction
   }
 
+  equals(otherAction) {
+    if (this === otherAction) {
+      return true
+    }
+
+    if (otherAction === null) {
+      return false
+    }
+
+    if (!(otherAction instanceof SwipeAction)) {
+      return false
+    }
+
+    if (this.type !== otherAction.type) {
+      return false
+    }
+
+    if (!this.widget.equals(otherAction.widget)) {
+      return false
+    }
+
+    if (this.direction !== otherAction.direction) {
+      return false
+    }
+
+    return true
+  }
 }
 
 

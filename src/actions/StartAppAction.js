@@ -19,6 +19,30 @@ class StartAppAction extends Action {
   toCommand() {
     return `${this.type} ${this.pkgAct}`
   }
+
+  equals(otherAction) {
+    if (this === otherAction) {
+      return true
+    }
+
+    if (otherAction === null) {
+      return false
+    }
+
+    if (!(otherAction instanceof StartAppAction)) {
+      return false
+    }
+
+    if (this.type !== otherAction.type) {
+      return false
+    }
+
+    if (this.pkgAct !== otherAction.pkgAct) {
+      return false
+    }
+
+    return true
+  }
 }
 
 

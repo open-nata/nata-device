@@ -14,6 +14,10 @@ class Action {
   get type() {
     return this._type
   }
+
+  equals(action) {
+    throw new Error('Missing implementation')
+  }
 }
 
 export default Action
